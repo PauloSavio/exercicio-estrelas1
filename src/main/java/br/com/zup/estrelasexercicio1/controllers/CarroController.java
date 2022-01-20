@@ -21,6 +21,7 @@ public class CarroController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public void cadastrarCarro(@RequestBody CarroDTO carroDTO) {
         concessionaria.add(carroDTO);
     }
@@ -33,6 +34,24 @@ public class CarroController {
             }
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/{nomeDoCarro}")
+    public CarroDTO atualizarCarro(@PathVariable String nomeDoCarro, @RequestBody CarroDTO carroDTO) {
+        CarroDTO carroObjeto = null;
+        for (CarroDTO referencia : concessionaria) {
+            if (referencia.getModelo().equalsIgnoreCase(nomeDoCarro)) {
+                carroObjeto = referencia;
+            }
+        }
+        if (carroObjeto == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        carroObjeto.setAno(carroDTO.getAno());
+        carroObjeto.setCor(carroDTO.getCor());
+        carroObjeto.setMotor(carroDTO.getMotor());
+
+        return carroObjeto;
     }
 }
 
